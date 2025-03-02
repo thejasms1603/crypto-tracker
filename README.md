@@ -1,84 +1,101 @@
-# Turborepo starter
+# Crypto Price Tracker Documentation
 
-This Turborepo starter is maintained by the Turborepo core team.
+This documentation explains the approach, architecture, and implementation details of the Crypto Price Tracker project.
 
-## Using this example
+## Project Structure
 
-Run the following command:
+The project consists of two main parts:
 
-```sh
-npx create-turbo@latest
-```
+1. **Web App (Next.js)**: A dashboard that displays live cryptocurrency prices
+2. **Documentation**: This documentation explaining the approach and implementation details
 
-## What's inside?
+## Setup Guide
 
-This Turborepo includes the following packages/apps:
+### Prerequisites
 
-### Apps and Packages
+- Node.js (v16 or higher)
+- npm or yarn
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+### Running the Web App
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. Clone the repository
+2. Navigate to the project directory
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+5. Open your browser and navigate to `http://localhost:3000`
 
-### Utilities
+## API Integration
 
-This Turborepo has some additional tools already setup for you:
+The application uses the CoinGecko API to fetch cryptocurrency data. The integration is handled in the `src/api/cryptoApi.ts` file.
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Key Features:
 
-### Build
+- Fetches top cryptocurrencies by market cap
+- Updates prices automatically every minute
+- Provides manual refresh functionality
+- Handles loading states and error scenarios
 
-To build all apps and packages, run the following command:
+## State Management
 
-```
-cd my-turborepo
-pnpm build
-```
+The project uses a combination of React Query and Zustand for state management:
 
-### Develop
+### React Query
 
-To develop all apps and packages, run the following command:
+React Query is used for data fetching, caching, and synchronization. It provides:
 
-```
-cd my-turborepo
-pnpm dev
-```
+- Automatic refetching at intervals
+- Loading and error states
+- Cache invalidation
+- Manual refetch capabilities
 
-### Remote Caching
+### Zustand
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Zustand is used for global state management, providing:
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+- A simple, lightweight store
+- Easy state updates
+- Computed values (filtered cryptocurrencies)
+- Decoupled state logic from UI components
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+## UI Components
 
-```
-cd my-turborepo
-npx turbo login
-```
+The UI is built with React and styled with Tailwind CSS:
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+- **CryptoCard**: Displays individual cryptocurrency information
+- **CryptoList**: Renders the list of cryptocurrencies
+- **SearchBar**: Allows filtering cryptocurrencies
+- **RefreshButton**: Triggers manual data refresh
+- **CryptoTracker**: A landing Page
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## Challenges & Solutions
 
-```
-npx turbo link
-```
+### Challenge 1: API Rate Limiting
 
-## Useful Links
+CoinGecko's free API has rate limits that could affect the application during heavy usage.
 
-Learn more about the power of Turborepo:
+**Solution**: Implemented caching with React Query and set reasonable refetch intervals to minimize API calls.
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+### Challenge 2: Real-time Updates
+
+Cryptocurrency prices change rapidly, requiring frequent updates.
+
+**Solution**: Used a combination of automatic refetching at intervals and a manual refresh button to give users control over data freshness.
+
+### Challenge 3: Search Performance
+
+Searching through cryptocurrency data needed to be efficient.
+
+**Solution**: Implemented a computed selector in Zustand that filters cryptocurrencies based on the search term, ensuring good performance even with larger datasets.
+
+## Future Improvements
+
+- Add price history charts
+- Implement user authentication to save favorite cryptocurrencies
+- Add more detailed information for each cryptocurrency
+- Create a mobile app version using React Native
